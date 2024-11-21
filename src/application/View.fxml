@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="886.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
    <center>
       <StackPane fx:id="mapPane" prefHeight="262.0" prefWidth="510.0" BorderPane.alignment="CENTER" />
    </center>
@@ -23,7 +22,7 @@
       <HBox prefHeight="20.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
             <TextField fx:id="searchField" prefHeight="24.0" prefWidth="342.0" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="Search" HBox.hgrow="ALWAYS" />
+            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchLocation" prefHeight="26.0" prefWidth="86.0" text="Search" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </top>
@@ -150,15 +149,49 @@
          </content></ScrollPane>
    </right>
    <bottom>
-      <VBox prefHeight="162.0" prefWidth="720.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="162.0" prefWidth="720.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="35.0" prefWidth="720.0" spacing="20.0">
+            <HBox prefHeight="26.0" prefWidth="720.0" spacing="20.0">
                <children>
                   <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="162.0" text="Thông tin địa điểm" />
-                  <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="162.0" text="Chỉ đường" />
+                  <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="162.0" text="Chỉ đường" />
                </children>
             </HBox>
-            <TextArea prefHeight="200.0" prefWidth="200.0" />
+            <GridPane hgap="10.0" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.99998779296874" minWidth="10.0" prefWidth="355.99998779296874" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="628.7999877929688" minWidth="10.0" prefWidth="364.8000122070312" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox prefHeight="30.0" prefWidth="354.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="30.0" prefWidth="117.0" text="Kinh độ" />
+                        <Label fx:id="lonLabel" prefHeight="30.0" prefWidth="280.0" styleClass="label-border" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="31.0" prefWidth="71.0" text="Vĩ độ" />
+                        <Label fx:id="latLabel" prefHeight="30.0" prefWidth="280.0" styleClass="label-border" />
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <HBox prefHeight="30.0" prefWidth="886.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="97.0" text="  Địa chỉ" />
+                  <Label fx:id="displayNameLabel" prefHeight="30.0" prefWidth="626.0" styleClass="label-border" />
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="886.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="97.0" text="Extratag" />
+                  <Label fx:id="displayNameLabel1" prefHeight="30.0" prefWidth="626.0" styleClass="label-border" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </bottom>
