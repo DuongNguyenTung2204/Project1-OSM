@@ -5,9 +5,14 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.json.JSONArray;
@@ -15,6 +20,7 @@ import org.json.JSONObject;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
@@ -46,10 +52,11 @@ public class MapController implements Initializable {
 	
 	@FXML
 	private Label lonLabel;
-	
+
 	@FXML
 	private Label displayNameLabel;
 	private JMapViewer mapViewer;
+	private List<MapMarker> markers;
     private MapMarkerDot currentMarker = null; 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -60,6 +67,8 @@ public class MapController implements Initializable {
         mapViewer.setDisplayPosition(hanoi, 12);
         swingNode.setContent(mapViewer);
         mapPane.getChildren().add(swingNode);
+        
+        markers = new ArrayList<>();
         
         mapViewer.addMouseListener(new MouseAdapter() {
         	
@@ -90,6 +99,7 @@ public class MapController implements Initializable {
 	
 	// Tính năng tìm kiếm
 	public void searchLocation(ActionEvent event) throws IOException, InterruptedException {
+		clearAllMarkers();
 		// Lấy tên địa điểm đã nhập
 		String location = searchField.getText();
 		// Tạo URL
@@ -116,6 +126,7 @@ public class MapController implements Initializable {
             	double lat = obj.getDouble("lat");
             	double lon = obj.getDouble("lon");
             	MapMarkerDot marker = new MapMarkerDot(lat, lon);
+            	markers.add(marker);
             	mapViewer.addMapMarker(marker);
             }
         } else {
@@ -144,4 +155,214 @@ public class MapController implements Initializable {
 	        displayNameLabel.setText(displayName);
 	    });
 	}
+	
+	// Tìm kiếm địa điểm sử dụng Overpass API
+	// Amenity
+	public void findAmenity(ActionEvent event) throws IOException, InterruptedException {
+        clearAllMarkers();
+		
+		Button btn = (Button) event.getSource();
+		String key = btn.getText().replace(" ", "_").toLowerCase();
+	   
+		double vd  = currentMarker.getLat();
+		double kd  = currentMarker.getLon();
+		
+	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
+	    String query = "[out:json];node[\"amenity\"=\"%s\"](around:5000,%f,%f);out;";
+	    
+	    String url = String.format(query, key, vd, kd);
+	    String encodeUrl = URLEncoder.encode(url, "UTF-8");
+	    
+	    String uri = apiUrl + encodeUrl;
+        
+        HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(uri))
+				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+				.build(); 
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		
+		JSONObject results = new JSONObject(response.body());
+        JSONArray elements = results.getJSONArray("elements"); 
+        
+        if (elements.length() > 0) {
+            for (int i = 0; i < elements.length(); i++) {
+                JSONObject obj = elements.getJSONObject(i);
+                
+                if (obj.has("lat") && obj.has("lon")) {
+                    double lat = obj.getDouble("lat");
+                    double lon = obj.getDouble("lon");
+                    
+                    markers.add(new MapMarkerDot(lat, lon));
+                }
+            }
+            
+            Platform.runLater(() -> {
+                for (MapMarker marker : markers) {
+                    mapViewer.addMapMarker(marker);
+                }
+            });
+        } else {
+            System.out.println("Không tìm thấy");
+        }	
+	}
+	
+	// Shop
+	public void findShop(ActionEvent event) throws IOException, InterruptedException {
+        clearAllMarkers();
+		
+		Button btn = (Button) event.getSource();
+		String key = btn.getText().replace(" ", "_").toLowerCase();
+	   
+		double vd  = currentMarker.getLat();
+		double kd  = currentMarker.getLon();
+		
+	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
+	    String query = "[out:json];node[\"shop\"=\"%s\"](around:5000,%f,%f);out;";
+	    
+	    String url = String.format(query, key, vd, kd);
+	    String encodeUrl = URLEncoder.encode(url, "UTF-8");
+	    
+	    String uri = apiUrl + encodeUrl;
+        
+        HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(uri))
+				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+				.build(); 
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		
+		JSONObject results = new JSONObject(response.body());
+        JSONArray elements = results.getJSONArray("elements"); 
+        
+        if (elements.length() > 0) {
+            for (int i = 0; i < elements.length(); i++) {
+                JSONObject obj = elements.getJSONObject(i);
+                
+                if (obj.has("lat") && obj.has("lon")) {
+                    double lat = obj.getDouble("lat");
+                    double lon = obj.getDouble("lon");
+                    
+                    markers.add(new MapMarkerDot(lat, lon));
+                }
+            }
+            
+            Platform.runLater(() -> {
+                for (MapMarker marker : markers) {
+                    mapViewer.addMapMarker(marker);
+                }
+            });
+        } else {
+            System.out.println("Không tìm thấy");
+        }	
+	}
+	
+	// Leisure
+	public void findLeisure(ActionEvent event) throws IOException, InterruptedException {
+        clearAllMarkers();
+		
+		Button btn = (Button) event.getSource();
+		String key = btn.getText().replace(" ", "_").toLowerCase();
+	   
+		double vd  = currentMarker.getLat();
+		double kd  = currentMarker.getLon();
+		
+	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
+	    String query = "[out:json];node[\"leisure\"=\"%s\"](around:5000,%f,%f);out;";
+	    
+	    String url = String.format(query, key, vd, kd);
+	    String encodeUrl = URLEncoder.encode(url, "UTF-8");
+	    
+	    String uri = apiUrl + encodeUrl;
+        
+        HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(uri))
+				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+				.build(); 
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		
+		JSONObject results = new JSONObject(response.body());
+        JSONArray elements = results.getJSONArray("elements"); 
+        
+        if (elements.length() > 0) {
+            for (int i = 0; i < elements.length(); i++) {
+                JSONObject obj = elements.getJSONObject(i);
+                
+                if (obj.has("lat") && obj.has("lon")) {
+                    double lat = obj.getDouble("lat");
+                    double lon = obj.getDouble("lon");
+                    
+                    markers.add(new MapMarkerDot(lat, lon));
+                }
+            }
+            
+            Platform.runLater(() -> {
+                for (MapMarker marker : markers) {
+                    mapViewer.addMapMarker(marker);
+                }
+            });
+        } else {
+            System.out.println("Không tìm thấy");
+        }	
+	}
+	
+	// Tourism
+	public void findTourism(ActionEvent event) throws IOException, InterruptedException {
+        clearAllMarkers();
+		
+		Button btn = (Button) event.getSource();
+		String key = btn.getText().replace(" ", "_").toLowerCase();
+	   
+		double vd  = currentMarker.getLat();
+		double kd  = currentMarker.getLon();
+		
+	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
+	    String query = "[out:json];node[\"tourism\"=\"%s\"](around:5000,%f,%f);out;";
+	    
+	    String url = String.format(query, key, vd, kd);
+	    String encodeUrl = URLEncoder.encode(url, "UTF-8");
+	    
+	    String uri = apiUrl + encodeUrl;
+        
+        HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(uri))
+				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+				.build(); 
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		
+		JSONObject results = new JSONObject(response.body());
+        JSONArray elements = results.getJSONArray("elements"); 
+        
+        if (elements.length() > 0) {
+            for (int i = 0; i < elements.length(); i++) {
+                JSONObject obj = elements.getJSONObject(i);
+                
+                if (obj.has("lat") && obj.has("lon")) {
+                    double lat = obj.getDouble("lat");
+                    double lon = obj.getDouble("lon");
+                    
+                    markers.add(new MapMarkerDot(lat, lon));
+                }
+            }
+            
+            Platform.runLater(() -> {
+                for (MapMarker marker : markers) {
+                    mapViewer.addMapMarker(marker);
+                }
+            });
+        } else {
+            System.out.println("Không tìm thấy");
+        }	
+	}
+	
+	// Xóa các điểm đánh dấu từ truy vấn trước đó khỏi bản đồ trước khi thực hiện truy vấn mới
+	public void clearAllMarkers() {
+		for (MapMarker marker : markers) {
+            mapViewer.removeMapMarker(marker); 
+        }
+        markers.clear();
+    }
+	
 }
