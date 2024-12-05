@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="886.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
+<BorderPane fx:id="mainBorder" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="886.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
    <center>
       <StackPane fx:id="mapPane" prefHeight="262.0" prefWidth="510.0" BorderPane.alignment="CENTER" />
    </center>
@@ -153,8 +153,8 @@
          <children>
             <HBox prefHeight="26.0" prefWidth="720.0" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="162.0" text="Thông tin địa điểm" />
-                  <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="162.0" text="Chỉ đường" />
+                  <Button fx:id="infoLocationButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="162.0" text="Thông tin địa điểm" />
+                  <Button fx:id="directionButton" mnemonicParsing="false" onAction="#routing" prefHeight="28.0" prefWidth="162.0" text="Chỉ đường" />
                </children>
             </HBox>
             <GridPane hgap="10.0" vgap="10.0">
