@@ -1,5 +1,6 @@
 package application;
 
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -23,6 +24,9 @@ import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
+import com.google.maps.internal.PolylineEncoding;
+import com.google.maps.model.LatLng;
+
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -34,6 +38,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Polyline;
 
 public class MapController implements Initializable {
 	@FXML
@@ -66,7 +71,7 @@ public class MapController implements Initializable {
 	@FXML
 	private Label displayNameLabel;
 	
-	private JMapViewer mapViewer;
+	private CustomMapViewer mapViewer;
 	private List<MapMarker> markers;
     private MapMarkerDot currentMarker = null; 
     
@@ -81,7 +86,7 @@ public class MapController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// Setup các thành phần mặc định cho bản đồ
 		SwingNode swingNode = new SwingNode(); 
-        mapViewer = new JMapViewer();
+        mapViewer = new CustomMapViewer();
         Coordinate hanoi = new Coordinate(21.0285, 105.8542); 
         mapViewer.setDisplayPosition(hanoi, 12);
         swingNode.setContent(mapViewer);
@@ -378,8 +383,26 @@ public class MapController implements Initializable {
 	
 	
 	// Chức năng chỉ đường
+	// Hàm để đánh dấu điểm bắt đầu và kết thúc
+    public void markStartPoint(double lat, double lon) {
+	    startMarker = new MapMarkerDot(lat, lon);
+		mapViewer.addMapMarker(startMarker);
+		System.out.println("Điểm bắt đầu đã được đánh dấu.");
+    }
+
+	public void markEndPoint(double lat, double lon) {
+	    endMarker = new MapMarkerDot(lat, lon);
+		mapViewer.addMapMarker(endMarker);
+		System.out.println("Điểm kết thúc đã được đánh dấu.");
+	}
+
+	
 	public void routing(ActionEvent event) {
 	    System.out.println("Vui lòng chọn hai điểm trên bản đồ.");
+
+	    count = 0; // Reset đếm số lần nhấp chuột
+	    startMarker = null;
+	    endMarker = null;
 
 	    mapViewer.addMouseListener(new MouseAdapter() {
 	        @Override
@@ -390,132 +413,72 @@ public class MapController implements Initializable {
 	                // Lần nhấp chuột đầu tiên: Đánh dấu điểm bắt đầu
 	                if (count == 0) {
 	                    markStartPoint(position.getLat(), position.getLon());
-	                    count++;  // Tăng count sau lần nhấp đầu tiên
+	                    count++;
 	                }
-	                // Lần nhấp chuột thứ hai: Đánh dấu điểm kết thúc
+	                // Lần nhấp chuột thứ hai: Đánh dấu điểm kết thúc và tính toán đường đi
 	                else if (count == 1) {
 	                    markEndPoint(position.getLat(), position.getLon());
-	                    count++;  // Tăng count sau lần nhấp thứ hai
-	                    // Tiến hành tính toán đường đi
-	                    calculateRoute();
+	                    count++;
+	                    try {
+							calculateRoute();
+						} catch (IOException | InterruptedException e1) {
+							e1.printStackTrace();
+						}
+	                    mapViewer.removeMouseListener(this); // Ngừng lắng nghe sự kiện nhấp chuột
 	                }
 	            }
 	        }
 	    });
 	}
+	
+	
+	public void calculateRoute() throws IOException, InterruptedException {
+	    if (startMarker != null && endMarker != null) {
+	        double startLat = startMarker.getLat();
+	        double startLon = startMarker.getLon();
+	        double endLat = endMarker.getLat();
+	        double endLon = endMarker.getLon();
 
-	// Tính toán và vẽ tuyến đường
-	private void calculateRoute() {
-	    if (startMarker == null || endMarker == null) {
-	        System.out.println("Vui lòng chọn hai điểm trên bản đồ.");
-	        return;
-	    }
+	        // Sử dụng OSRM API để lấy tuyến đường
+	        String apiUrl = "https://router.project-osrm.org/route/v1/driving/" + startLon + "," + startLat + ";" + endLon + "," + endLat + "?overview=full&geometries=geojson";
 
-	    double startLat = startMarker.getLat();
-	    double startLon = startMarker.getLon();
-	    double endLat = endMarker.getLat();
-	    double endLon = endMarker.getLon();
+	        HttpClient client = HttpClient.newHttpClient();
+	        HttpRequest request = HttpRequest.newBuilder()
+	                .uri(URI.create(apiUrl))
+	                .header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+	                .build();
 
-	    // API để tính toán tuyến đường
-	    String apiUrl = "https://router.project-osrm.org/route/v1/driving/" + startLon + "," + startLat + ";" + endLon + "," + endLat + "?overview=full";
+	        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+	        String responseBody = response.body();
 
-	    HttpClient client = HttpClient.newHttpClient();
-	    HttpRequest request = HttpRequest.newBuilder()
-	            .uri(URI.create(apiUrl))
-	            .header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
-	            .build();
+	        // In ra phản hồi để kiểm tra cấu trúc
+	        System.out.println(responseBody);
 
-	    client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenAccept(response -> {
-	        JSONObject jsonResponse = new JSONObject(response);
+	        // Phân tích JSON
+	        JSONObject jsonResponse = new JSONObject(responseBody);
 	        JSONArray routes = jsonResponse.getJSONArray("routes");
 
-	        if (routes.length() > 0) {
-	            JSONObject route = routes.getJSONObject(0);
-	            String geometry = route.getString("geometry");
+	        JSONObject route = routes.getJSONObject(0);
+	        JSONObject geometry = route.getJSONObject("geometry");
+	        JSONArray coordinates = geometry.getJSONArray("coordinates");
 
-	            // Decode polyline to list of coordinates
-	            List<Coordinate> routeCoordinates = decodePolyline(geometry);
-
-	            // Vẽ tất cả các điểm trước
-	            Platform.runLater(() -> {
-	                // Xóa các đường trước đó nếu cần
-	                mapViewer.removeAllMapPolygons();
-
-	                // Thêm tuyến đường vào bản đồ
-	                mapViewer.addMapPolygon(new MapPolygonImpl(routeCoordinates));
-
-	                // Xóa đoạn thừa nối giữa điểm đầu và điểm cuối
-	                if (routeCoordinates.size() > 2) {
-	                    // Xóa đoạn nối từ điểm đầu (startMarker) tới điểm cuối (endMarker)
-	                    routeCoordinates.subList(0, 1).clear(); // Xóa điểm đầu
-	                    routeCoordinates.subList(routeCoordinates.size() - 1, routeCoordinates.size()).clear(); // Xóa điểm cuối
-	                }
-
-	                // Cập nhật lại bản đồ sau khi xóa đoạn thừa
-	                mapViewer.removeAllMapPolygons();  // Xóa lại bản đồ để vẽ mới
-	                mapViewer.addMapPolygon(new MapPolygonImpl(routeCoordinates));  // Thêm lại tuyến đường đã loại bỏ đoạn thừa
-	            });
-	        } else {
-	            System.out.println("Không tìm thấy tuyến đường.");
+	        List<Coordinate> routePoints = new ArrayList<>();
+	        routePoints.add(new Coordinate(startLat, startLon));
+	        for (int i = 0; i < coordinates.length(); i++) {
+	            JSONArray coord = coordinates.getJSONArray(i);
+	            routePoints.add(new Coordinate(coord.getDouble(1), coord.getDouble(0))); // Latitude, Longitude
 	        }
-	    }).exceptionally(ex -> {
-	        ex.printStackTrace();
-	        return null;
-	    });
-	}
+	        routePoints.add(new Coordinate(endLat, endLon));
 
-
-
-	// Hàm để đánh dấu điểm bắt đầu và kết thúc
-	public void markStartPoint(double lat, double lon) {
-	    startMarker = new MapMarkerDot(lat, lon);
-	    mapViewer.addMapMarker(startMarker);
-	    System.out.println("Điểm bắt đầu đã được đánh dấu.");
-	}
-
-	public void markEndPoint(double lat, double lon) {
-	    endMarker = new MapMarkerDot(lat, lon);
-	    mapViewer.addMapMarker(endMarker);
-	    System.out.println("Điểm kết thúc đã được đánh dấu.");
-	}
-
-	// Hàm giải mã polyline thành danh sách các tọa độ
-	private List<Coordinate> decodePolyline(String encoded) {
-	    List<Coordinate> coordinates = new ArrayList<>();
-	    int index = 0;
-	    int len = encoded.length();
-	    int lat = 0;
-	    int lng = 0;
-
-	    while (index < len) {
-	        int b;
-	        int shift = 0;
-	        int result = 0;
-	        do {
-	            b = encoded.charAt(index++) - 63;
-	            result |= (b & 0x1f) << shift;
-	            shift += 5;
-	        } while (b >= 0x20);
-	        int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-	        lat += dlat;
-
-	        shift = 0;
-	        result = 0;
-	        do {
-	            b = encoded.charAt(index++) - 63;
-	            result |= (b & 0x1f) << shift;
-	            shift += 5;
-	        } while (b >= 0x20);
-	        int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-	        lng += dlng;
-
-	        coordinates.add(new Coordinate(lat / 1E5, lng / 1E5));
+	        
+	        drawRoute(routePoints);
 	    }
-
-	    return coordinates;
 	}
 
-	
+	public void drawRoute(List<Coordinate> routePoints) {
+        // Gửi danh sách routePoints vào CustomJMapViewer
+        mapViewer.setRoutePoints(routePoints);
+    }
 	// Xóa các điểm đánh dấu từ truy vấn trước đó khỏi bản đồ trước khi thực hiện truy vấn mới
 	public void clearAllMarkers() {
 		for (MapMarker marker : markers) {
