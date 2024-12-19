@@ -23,6 +23,10 @@ import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TemplatedTMSTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TileSourceInfo;
 
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.LatLng;
@@ -87,11 +91,18 @@ public class MapController implements Initializable {
 		// Setup các thành phần mặc định cho bản đồ
 		SwingNode swingNode = new SwingNode(); 
         mapViewer = new CustomMapViewer();
-        Coordinate hanoi = new Coordinate(21.0285, 105.8542); 
-        mapViewer.setDisplayPosition(hanoi, 12);
+        Coordinate myLocation = null;
+		try {
+			myLocation = getMyLocation();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} 
+        mapViewer.setDisplayPosition(myLocation, 12);
         swingNode.setContent(mapViewer);
         mapPane.getChildren().add(swingNode);
-        
+      
         markers = new ArrayList<>();
         
         mapViewer.addMouseListener(new MouseAdapter() {
@@ -487,7 +498,27 @@ public class MapController implements Initializable {
         markers.clear();
     }
 	
-	
+	// Lấy tọa độ của máy
+	public Coordinate getMyLocation() throws IOException, InterruptedException {
+		String apiKey = "7f9897b6befaefbaef58dd9425c133a6";
+		String url = "http://api.ipstack.com/check?access_key=" + apiKey;
+		
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+                .build();
+		
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		String responseBody = response.body();
+		JSONObject jsonResponse = new JSONObject(responseBody);
+		
+		double latitude = jsonResponse.getDouble("latitude");
+	    double longitude = jsonResponse.getDouble("longitude");
+
+	    mapViewer.addMapMarker(new MapMarkerDot(latitude, longitude));
+	    return new Coordinate(latitude, longitude);
+	}
 
 	
 }
