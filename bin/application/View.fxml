@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorder" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="886.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
+<BorderPane fx:id="mainBorder" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="860.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MapController">
    <center>
       <StackPane fx:id="mapPane" prefHeight="262.0" prefWidth="510.0" BorderPane.alignment="CENTER" />
    </center>
@@ -34,7 +34,7 @@
          <content>
             <VBox alignment="TOP_CENTER" prefHeight="701.0" prefWidth="266.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="70.0" text="Danh mục">
+                  <Label alignment="CENTER" prefHeight="26.0" prefWidth="103.0" text="What's Nearby">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -55,12 +55,12 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Restaurant" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Cafe" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Bar" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Fast food" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Marketplace" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Bakery" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button minHeight="28.0" mnemonicParsing="false" onAction="#findAmenity" prefHeight="28.0" prefWidth="125.0" styleClass="button-17" text="Restaurant" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Cafe" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Bar" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Fast food" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Marketplace" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Bakery" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <Label prefHeight="34.0" prefWidth="266.0" text=" Giải trí">
@@ -80,14 +80,14 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#findLeisure" prefHeight="26.0" prefWidth="125.0" text="Park" />
-                        <Button mnemonicParsing="false" onAction="#findLeisure" prefHeight="26.0" prefWidth="125.0" text="Fitness centre" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" text="Museum" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Cinema" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Library" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" text="Attraction" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Theatre" GridPane.rowIndex="3" />
-                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" text="Artwork" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" onAction="#findLeisure" prefHeight="18.0" prefWidth="126.0" styleClass="button-17" text="Park" />
+                        <Button mnemonicParsing="false" onAction="#findLeisure" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Fitness centre" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Museum" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Cinema" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Library" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Attraction" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Theatre" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Artwork" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                   <Label prefHeight="34.0" prefWidth="265.0" text=" Mua sắm">
@@ -106,12 +106,12 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Convenience" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Car" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Clothes" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Mall" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Electronics" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Sports" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Convenience" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Car" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Clothes" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Mall" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Electronics" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Sports" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <Label prefHeight="34.0" prefWidth="265.0" text=" Dịch vụ">
@@ -132,66 +132,33 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" text="Hotel" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="ATM" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" text="Beauty" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Car wash" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Laundry" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Fuel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Hospital" GridPane.rowIndex="3" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Post office" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Parking" GridPane.rowIndex="4" />
-                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" text="Pharmacy" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Button mnemonicParsing="false" onAction="#findTourism" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Hotel" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="ATM" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findShop" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Beauty" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Car wash" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Laundry" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Fuel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Hospital" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Post office" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Parking" GridPane.rowIndex="4" />
+                        <Button mnemonicParsing="false" onAction="#findAmenity" prefHeight="26.0" prefWidth="125.0" styleClass="button-17" text="Pharmacy" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
                </children>
             </VBox>
-         </content></ScrollPane>
+         </content>
+      </ScrollPane>
    </right>
    <bottom>
       <VBox prefHeight="162.0" prefWidth="720.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
             <HBox prefHeight="26.0" prefWidth="720.0" spacing="20.0">
                <children>
-                  <Button fx:id="infoLocationButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="162.0" text="Thông tin địa điểm" />
-                  <Button fx:id="directionButton" mnemonicParsing="false" onAction="#routing" prefHeight="28.0" prefWidth="162.0" text="Chỉ đường" />
+                  <Button fx:id="infoLocationButton" mnemonicParsing="false" onAction="#loadBottomScene1" prefHeight="26.0" prefWidth="162.0" styleClass="button-pill" text="Thông tin địa điểm" />
+                  <Button fx:id="directionButton" mnemonicParsing="false" onAction="#loadBottomScene2" prefHeight="28.0" prefWidth="162.0" styleClass="button-pill" text="Chỉ đường" />
                </children>
             </HBox>
-            <GridPane hgap="10.0" vgap="10.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.99998779296874" minWidth="10.0" prefWidth="355.99998779296874" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="628.7999877929688" minWidth="10.0" prefWidth="364.8000122070312" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <HBox prefHeight="30.0" prefWidth="354.0">
-                     <children>
-                        <Label alignment="CENTER" prefHeight="30.0" prefWidth="117.0" text="Kinh độ" />
-                        <Label fx:id="lonLabel" prefHeight="30.0" prefWidth="280.0" styleClass="label-border" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
-                     <children>
-                        <Label alignment="CENTER" prefHeight="31.0" prefWidth="71.0" text="Vĩ độ" />
-                        <Label fx:id="latLabel" prefHeight="30.0" prefWidth="280.0" styleClass="label-border" />
-                     </children>
-                  </HBox>
-               </children>
-            </GridPane>
-            <HBox prefHeight="30.0" prefWidth="886.0">
-               <children>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="97.0" text="  Địa chỉ" />
-                  <Label fx:id="displayNameLabel" prefHeight="30.0" prefWidth="626.0" styleClass="label-border" />
-               </children>
-            </HBox>
-            <HBox prefHeight="30.0" prefWidth="886.0">
-               <children>
-                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="97.0" text="Extratag" />
-                  <Label fx:id="displayNameLabel1" prefHeight="30.0" prefWidth="626.0" styleClass="label-border" />
-               </children>
-            </HBox>
+            <VBox fx:id="bottomVbox" prefHeight="200.0" prefWidth="100.0" spacing="10.0" />
          </children>
       </VBox>
    </bottom>

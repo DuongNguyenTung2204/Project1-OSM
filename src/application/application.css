@@ -6,3 +6,122 @@
     -fx-padding: 5;
     -fx-background-color: white;
 }
+
+.button-17 {
+    -fx-alignment: center;
+    -fx-background-color: #fff;
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
+    -fx-border-style: none;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 3);
+    -fx-text-fill: #3c4043;
+    -fx-font-family: "Roboto", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-min-height: 30px;
+    -fx-padding: 2px 24px;
+    -fx-text-alignment: center;
+    -fx-cursor: hand;
+}
+
+.button-17:hover {
+    -fx-background-color: #F6F9FE;
+    -fx-text-fill: #174ea6;
+    -fx-effect: dropshadow(gaussian, rgba(60, 64, 67, 0.15), 8, 0.4, 0, 3);
+}
+
+.button-17:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(60, 64, 67, 0.3), 12, 0.4, 0, 4);
+    -fx-background-color: #E8F0FE;
+}
+
+.button-17:focused {
+    -fx-border-color: #4285f4;
+    -fx-border-width: 2px;
+}
+
+.button-17:disabled {
+    -fx-opacity: 0.6;
+    -fx-cursor: not-allowed;
+}
+
+.button-6 {
+    -fx-background-color: #FFFFFF; /* Màu nền trắng */
+    -fx-border-color: rgba(0, 0, 0, 0.1); /* Màu viền */
+    -fx-border-radius: 4px; /* Bo góc */
+    -fx-border-width: 1px; /* Độ dày viền */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.02), 3, 0, 0, 1); /* Bóng đổ */
+    -fx-text-fill: rgba(0, 0, 0, 0.85); /* Màu chữ */
+    -fx-cursor: hand; /* Hiển thị con trỏ khi di chuột */
+    -fx-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Font chữ */
+    -fx-font-size: 12px; /* Kích thước chữ (giảm xuống để phù hợp với kích thước nút) */
+    -fx-font-weight: 600; /* Đậm chữ */
+    -fx-line-spacing: 1.25; /* Khoảng cách giữa các dòng chữ */
+    -fx-padding: 5px 10px; /* Khoảng cách trong nút (giảm để vừa với không gian nhỏ) */
+    -fx-min-height: 30px; /* Chiều cao tối thiểu */
+    -fx-pref-width: 146px; /* Chiều rộng tùy chỉnh */
+    -fx-alignment: center; /* Căn giữa nội dung */
+    -fx-transition: all 250ms; /* Hiệu ứng chuyển động */
+    -fx-user-select: none; /* Ngăn chọn văn bản */
+    -fx-translate-y: 0; /* Di chuyển nút khi ấn */
+    -fx-vertical-align: baseline; /* Căn chỉnh theo dòng cơ bản */
+}
+
+/* Hiệu ứng hover và focus */
+.button-6:hover,
+.button-6:focus {
+    -fx-border-color: rgba(0, 0, 0, 0.15); /* Màu viền khi hover/focus */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2); /* Bóng đổ khi hover/focus */
+    -fx-text-fill: rgba(0, 0, 0, 0.65); /* Màu chữ khi hover/focus */
+}
+
+/* Hiệu ứng khi nhấn nút */
+.button-6:pressed {
+    -fx-background-color: #F0F0F1; /* Màu nền khi nhấn */
+    -fx-border-color: rgba(0, 0, 0, 0.15); /* Màu viền khi nhấn */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 2, 0, 0, 2); /* Bóng đổ khi nhấn */
+    -fx-text-fill: rgba(0, 0, 0, 0.65); /* Màu chữ khi nhấn */
+    -fx-translate-y: 1px; /* Di chuyển nút khi nhấn */
+}
+
+.button-pill {
+    -fx-background-color: #FFFFFF; /* Màu nền trắng mặc định */
+    -fx-border-color: #CCCCCC; /* Màu viền */
+    -fx-border-radius: 50px; /* Bo góc tạo hình viên thuốc */
+    -fx-background-radius: 50px; /* Đảm bảo nền cũng có hình viên thuốc */
+    -fx-border-width: 2px; /* Độ dày viền */
+    -fx-background-insets: 0, 2; /* Điều chỉnh khoảng cách giữa nền và viền */
+    -fx-text-fill: #333333; /* Màu chữ */
+    -fx-font-size: 14px; /* Kích thước chữ */
+    -fx-font-weight: 500; /* Đậm chữ */
+    -fx-padding: 0 18px; /* Giảm bớt padding để vừa với chiều cao */
+    -fx-cursor: hand; /* Con trỏ chuột khi hover */
+    -fx-alignment: center; /* Căn giữa nội dung */
+    -fx-transition: all 250ms; /* Hiệu ứng chuyển động */
+    -fx-min-height: 26px; /* Chiều cao 26px */
+    -fx-pref-width: 162px; /* Chiều rộng 162px */
+}
+
+/* Hiệu ứng khi hover */
+.button-pill:hover {
+    -fx-background-color: #f0f0f0; /* Màu nền khi hover */
+    -fx-border-color: #888888; /* Màu viền khi hover */
+}
+
+/* Hiệu ứng khi button được nhấn */
+.button-pill:pressed {
+    -fx-background-color: #E0E0E0; /* Màu nền khi nhấn */
+}
+
+/* Khi button được chọn (background xanh dương khi nhấn) */
+.button-pill.selected {
+    -fx-background-color: #007BFF; /* Màu nền xanh dương */
+    -fx-text-fill: white; /* Màu chữ trắng khi chọn */
+    -fx-border-color: #007BFF; /* Viền xanh dương khi chọn */
+}
+
+/* Khi button không được chọn (background trắng khi không chọn) */
+.button-pill:not(.selected) {
+    -fx-background-color: #FFFFFF; /* Màu nền trắng */
+    -fx-text-fill: #333333; /* Màu chữ đen */
+}

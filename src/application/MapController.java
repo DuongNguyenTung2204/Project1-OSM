@@ -1,6 +1,6 @@
 package application;
 
-import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -10,39 +10,29 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.TemplatedTMSTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.TileSourceInfo;
-
-import com.google.maps.internal.PolylineEncoding;
-import com.google.maps.model.LatLng;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Polyline;
+import javafx.scene.layout.VBox;
+import java.util.function.Consumer;
 
 public class MapController implements Initializable {
 	@FXML
@@ -61,19 +51,16 @@ public class MapController implements Initializable {
 	private Button directionButton;
 	
 	@FXML
+	private VBox bottomVbox;
+	
+	@FXML
 	private StackPane mapPane;
 
 	@FXML
 	private HBox BoxControl;
-
-	@FXML
-	private Label latLabel;
 	
-	@FXML
-	private Label lonLabel;
-
-	@FXML
-	private Label displayNameLabel;
+	private BottomSceneController1 bottomSceneController1;
+	private BottomSceneController2 bottomSceneController2;
 	
 	private CustomMapViewer mapViewer;
 	private List<MapMarker> markers;
@@ -92,6 +79,7 @@ public class MapController implements Initializable {
 		SwingNode swingNode = new SwingNode(); 
         mapViewer = new CustomMapViewer();
         Coordinate myLocation = null;
+        
 		try {
 			myLocation = getMyLocation();
 		} catch (IOException e) {
@@ -99,10 +87,11 @@ public class MapController implements Initializable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} 
+		
         mapViewer.setDisplayPosition(myLocation, 12);
         swingNode.setContent(mapViewer);
         mapPane.getChildren().add(swingNode);
-      
+        infoLocationButton.fire();
         markers = new ArrayList<>();
         
         mapViewer.addMouseListener(new MouseAdapter() {
@@ -112,15 +101,37 @@ public class MapController implements Initializable {
   
         		if (position != null) {
                     updateMarker(position.getLat(), position.getLon());
+                    
                     try {
-						getInfomationLocal(position.getLat(), position.getLon());
+						 bottomSceneController1.getInfomationLocal(position.getLat(), position.getLon());
 					} catch (IOException | InterruptedException e1) {
 						e1.printStackTrace();
 					}
+				
                 }
         	}
 		});
 	}
+	
+    public void loadBottomScene1(ActionEvent event) throws IOException {
+    	infoLocationButton.getStyleClass().add("selected");
+        directionButton.getStyleClass().remove("selected");
+        // Thay đổi nội dung bottomVbox cho "Thông tin địa điểm"
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("BottomScene1.fxml"));
+        VBox newContent = loader.load();
+        bottomSceneController1 = loader.getController();
+        bottomVbox.getChildren().setAll(newContent.getChildren());
+    }
+
+    public void loadBottomScene2(ActionEvent event) throws IOException {
+    	directionButton.getStyleClass().add("selected");
+        infoLocationButton.getStyleClass().remove("selected");
+        // Thay đổi nội dung bottomVbox cho "Chỉ đường"
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("BottomScene2.fxml"));
+        VBox newContent = loader.load();
+        bottomSceneController2 = loader.getController();
+        bottomVbox.getChildren().setAll(newContent.getChildren());
+    }
 
 	// Tính năng đánh dấu
 	public void updateMarker(double lat, double lon) {
@@ -167,28 +178,6 @@ public class MapController implements Initializable {
         } else {
             System.out.println("Không tìm thấy");
         }
-	}
-	
-	// Hiển thị thông tin tại địa điểm đã đánh dấu
-	public void getInfomationLocal(double lat, double lon) throws IOException, InterruptedException {
-	    String url = String.format(
-				"https://nominatim.openstreetmap.org/reverse?lat=%f&lon=%f&format=json&addressdetails=1&extratags=1&namedetails=1", lat, lon);
-		
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(url))
-				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
-				.build(); 
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		String result = response.body();
-		JSONObject jsonResult = new JSONObject(result);
-		String displayName = jsonResult.getString("display_name").replaceAll(", \\d{5,}", "");
-		
-		Platform.runLater(() -> {
-	        latLabel.setText(String.valueOf(lat));
-	        lonLabel.setText(String.valueOf(lon));
-	        displayNameLabel.setText(displayName);
-	    });
 	}
 	
 	// Tìm kiếm địa điểm sử dụng Overpass API
@@ -394,54 +383,59 @@ public class MapController implements Initializable {
 	
 	
 	// Chức năng chỉ đường
-	// Hàm để đánh dấu điểm bắt đầu và kết thúc
-    public void markStartPoint(double lat, double lon) {
-	    startMarker = new MapMarkerDot(lat, lon);
-		mapViewer.addMapMarker(startMarker);
-		System.out.println("Điểm bắt đầu đã được đánh dấu.");
-    }
-
-	public void markEndPoint(double lat, double lon) {
-	    endMarker = new MapMarkerDot(lat, lon);
-		mapViewer.addMapMarker(endMarker);
-		System.out.println("Điểm kết thúc đã được đánh dấu.");
-	}
-
-	
-	public void routing(ActionEvent event) {
-	    System.out.println("Vui lòng chọn hai điểm trên bản đồ.");
-
-	    count = 0; // Reset đếm số lần nhấp chuột
-	    startMarker = null;
-	    endMarker = null;
-
-	    mapViewer.addMouseListener(new MouseAdapter() {
-	        @Override
-	        public void mouseClicked(MouseEvent e) {
-	            Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-
-	            if (position != null) {
-	                // Lần nhấp chuột đầu tiên: Đánh dấu điểm bắt đầu
-	                if (count == 0) {
-	                    markStartPoint(position.getLat(), position.getLon());
-	                    count++;
-	                }
-	                // Lần nhấp chuột thứ hai: Đánh dấu điểm kết thúc và tính toán đường đi
-	                else if (count == 1) {
-	                    markEndPoint(position.getLat(), position.getLon());
-	                    count++;
-	                    try {
-							calculateRoute();
-						} catch (IOException | InterruptedException e1) {
-							e1.printStackTrace();
-						}
-	                    mapViewer.removeMouseListener(this); // Ngừng lắng nghe sự kiện nhấp chuột
-	                }
-	            }
-	        }
-	    });
+	public void markRouting1(Consumer<JSONObject> callback) throws IOException, InterruptedException {
+	    count = 0;
+		if (count == 0) {
+            mapViewer.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // Khi người dùng click, lấy vị trí và đánh dấu điểm
+                    Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
+                    startMarker = new MapMarkerDot(position.getLat(), position.getLon());
+            		mapViewer.addMapMarker(startMarker);
+            		System.out.println("Điểm bắt đầu đã được đánh dấu.");
+            		
+            		try {
+                        JSONObject info = getInfomationLocal(startMarker.getLat(), startMarker.getLon());
+                        callback.accept(info);  // Trả kết quả qua callback
+                    } catch (IOException | InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+            		
+                    count = 1;  // Đánh dấu rằng đã nhận click
+                    // Xoá MouseListener sau khi click lần đầu tiên
+                    mapViewer.removeMouseListener(this);  // Loại bỏ MouseListener
+                }
+            });
+        }
 	}
 	
+	public void markRouting2(Consumer<JSONObject> callback) throws IOException, InterruptedException {
+	    count = 0;
+		if (count == 0) {
+            mapViewer.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // Khi người dùng click, lấy vị trí và đánh dấu điểm
+                    Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
+                    endMarker = new MapMarkerDot(position.getLat(), position.getLon());
+            		mapViewer.addMapMarker(endMarker);
+            		System.out.println("Điểm kết thúc đã được đánh dấu.");
+            		
+            		try {
+                        JSONObject info = getInfomationLocal(endMarker.getLat(), endMarker.getLon());
+                        callback.accept(info);  // Trả kết quả qua callback
+                    } catch (IOException | InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+            		
+                    count = 1;  // Đánh dấu rằng đã nhận click
+                    // Xoá MouseListener sau khi click lần đầu tiên
+                    mapViewer.removeMouseListener(this);  // Loại bỏ MouseListener
+                }
+            });
+        }
+	}
 	
 	public void calculateRoute() throws IOException, InterruptedException {
 	    if (startMarker != null && endMarker != null) {
@@ -490,6 +484,7 @@ public class MapController implements Initializable {
         // Gửi danh sách routePoints vào CustomJMapViewer
         mapViewer.setRoutePoints(routePoints);
     }
+	
 	// Xóa các điểm đánh dấu từ truy vấn trước đó khỏi bản đồ trước khi thực hiện truy vấn mới
 	public void clearAllMarkers() {
 		for (MapMarker marker : markers) {
@@ -500,25 +495,58 @@ public class MapController implements Initializable {
 	
 	// Lấy tọa độ của máy
 	public Coordinate getMyLocation() throws IOException, InterruptedException {
-		String apiKey = "7f9897b6befaefbaef58dd9425c133a6";
-		String url = "http://api.ipstack.com/check?access_key=" + apiKey;
+	    String url = "https://freegeoip.app/json/";
+
+	    HttpClient client = HttpClient.newBuilder()
+	            .followRedirects(HttpClient.Redirect.ALWAYS) // Xử lý chuyển hướng
+	            .build();
+
+	    HttpRequest request = HttpRequest.newBuilder()
+	            .uri(URI.create(url))
+	            .header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+	            .build();
+
+	    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+	    String responseBody = response.body();
+
+	    if (responseBody.trim().startsWith("{")) {
+	        JSONObject jsonResponse = new JSONObject(responseBody);
+
+	        double latitude = jsonResponse.getDouble("latitude");
+	        double longitude = jsonResponse.getDouble("longitude");
+
+	        if (mapViewer != null) {
+	            mapViewer.addMapMarker(new CustomMapMarker(latitude, longitude, Color.BLUE, 15, 2));
+	        }
+
+	        return new Coordinate(latitude, longitude);
+	    } else {
+	        throw new RuntimeException("Invalid response: " + responseBody);
+	    }
+	}
+	
+	// Lấy thông tin địa điểm đánh dấu 
+	public JSONObject getInfomationLocal(double lat, double lon) throws IOException, InterruptedException {
+	    String url = String.format(
+				"https://nominatim.openstreetmap.org/reverse?lat=%f&lon=%f&format=json&addressdetails=1&extratags=1&namedetails=1", lat, lon);
 		
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
-                .build();
-		
+				.uri(URI.create(url))
+				.header("User-Agent", "TestMap/1.0 (duongnguyentung2229@gmail.com)")
+				.build(); 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		String responseBody = response.body();
-		JSONObject jsonResponse = new JSONObject(responseBody);
+		String result = response.body();
+		JSONObject jsonResult = new JSONObject(result);
 		
-		double latitude = jsonResponse.getDouble("latitude");
-	    double longitude = jsonResponse.getDouble("longitude");
-
-	    mapViewer.addMapMarker(new MapMarkerDot(latitude, longitude));
-	    return new Coordinate(latitude, longitude);
+		return jsonResult;
 	}
 
-	
+	public MapMarkerDot getStartMarker() {
+		return startMarker;
+	}
+
+	public MapMarkerDot getEndMarker() {
+		return endMarker;
+	}
 }

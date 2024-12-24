@@ -13,6 +13,5 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JMapViewer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSON"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Google Map Service"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
