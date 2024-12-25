@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import application.MapController;  // Đảm bảo bạn import đúng
 
 public class Main extends Application {
 

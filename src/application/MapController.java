@@ -60,11 +60,12 @@ public class MapController implements Initializable {
 	private HBox BoxControl;
 	
 	private BottomSceneController1 bottomSceneController1;
-	private BottomSceneController2 bottomSceneController2;
+	//private BottomSceneController2 bottomSceneController2;
 	
 	private CustomMapViewer mapViewer;
 	private List<MapMarker> markers;
     private MapMarkerDot currentMarker = null; 
+    private MapMarkerDot myLocationMarker = null;
     
     // Biến lưu điểm bắt đầu và kết thúc
     private MapMarkerDot startMarker = null;
@@ -129,7 +130,7 @@ public class MapController implements Initializable {
         // Thay đổi nội dung bottomVbox cho "Chỉ đường"
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("BottomScene2.fxml"));
         VBox newContent = loader.load();
-        bottomSceneController2 = loader.getController();
+        //bottomSceneController2 = loader.getController();
         bottomVbox.getChildren().setAll(newContent.getChildren());
     }
 
@@ -139,7 +140,7 @@ public class MapController implements Initializable {
 			mapViewer.removeMapMarker(currentMarker);
 		}
 		
-		currentMarker = new MapMarkerDot(lat, lon);
+		currentMarker = new CurrentMapMarker(lat, lon, Color.RED, 15);
 		mapViewer.addMapMarker(currentMarker);
 	}
 	
@@ -185,11 +186,16 @@ public class MapController implements Initializable {
 	public void findAmenity(ActionEvent event) throws IOException, InterruptedException {
         clearAllMarkers();
 		
+        MapMarkerDot markerSource = myLocationMarker;
 		Button btn = (Button) event.getSource();
 		String key = btn.getText().replace(" ", "_").toLowerCase();
 	   
-		double vd  = currentMarker.getLat();
-		double kd  = currentMarker.getLon();
+		if(currentMarker != null) {
+			markerSource = currentMarker;
+		}
+		
+		double vd  = markerSource.getLat();
+		double kd  = markerSource.getLon();
 		
 	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
 	    String query = "[out:json];node[\"amenity\"=\"%s\"](around:5000,%f,%f);out;";
@@ -217,7 +223,7 @@ public class MapController implements Initializable {
                     double lat = obj.getDouble("lat");
                     double lon = obj.getDouble("lon");
                     
-                    markers.add(new MapMarkerDot(lat, lon));
+                    markers.add(new RequestMapMarker(lat, lon, Color.RED, 15));                 
                 }
             }
             
@@ -234,12 +240,17 @@ public class MapController implements Initializable {
 	// Shop
 	public void findShop(ActionEvent event) throws IOException, InterruptedException {
         clearAllMarkers();
-		
+        
+        MapMarkerDot markerSource = myLocationMarker;
 		Button btn = (Button) event.getSource();
 		String key = btn.getText().replace(" ", "_").toLowerCase();
 	   
-		double vd  = currentMarker.getLat();
-		double kd  = currentMarker.getLon();
+		if(currentMarker != null) {
+			markerSource = currentMarker;
+		}
+		
+		double vd  = markerSource.getLat();
+		double kd  = markerSource.getLon();
 		
 	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
 	    String query = "[out:json];node[\"shop\"=\"%s\"](around:5000,%f,%f);out;";
@@ -267,7 +278,7 @@ public class MapController implements Initializable {
                     double lat = obj.getDouble("lat");
                     double lon = obj.getDouble("lon");
                     
-                    markers.add(new MapMarkerDot(lat, lon));
+                    markers.add(new RequestMapMarker(lat, lon, Color.RED, 15));
                 }
             }
             
@@ -285,11 +296,16 @@ public class MapController implements Initializable {
 	public void findLeisure(ActionEvent event) throws IOException, InterruptedException {
         clearAllMarkers();
 		
+        MapMarkerDot markerSource = myLocationMarker;
 		Button btn = (Button) event.getSource();
 		String key = btn.getText().replace(" ", "_").toLowerCase();
 	   
-		double vd  = currentMarker.getLat();
-		double kd  = currentMarker.getLon();
+		if(currentMarker != null) {
+			markerSource = currentMarker;
+		}
+		
+		double vd  = markerSource.getLat();
+		double kd  = markerSource.getLon();
 		
 	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
 	    String query = "[out:json];node[\"leisure\"=\"%s\"](around:5000,%f,%f);out;";
@@ -317,7 +333,7 @@ public class MapController implements Initializable {
                     double lat = obj.getDouble("lat");
                     double lon = obj.getDouble("lon");
                     
-                    markers.add(new MapMarkerDot(lat, lon));
+                    markers.add(new RequestMapMarker(lat, lon, Color.RED, 15));
                 }
             }
             
@@ -335,11 +351,16 @@ public class MapController implements Initializable {
 	public void findTourism(ActionEvent event) throws IOException, InterruptedException {
         clearAllMarkers();
 		
+        MapMarkerDot markerSource = myLocationMarker;
 		Button btn = (Button) event.getSource();
 		String key = btn.getText().replace(" ", "_").toLowerCase();
 	   
-		double vd  = currentMarker.getLat();
-		double kd  = currentMarker.getLon();
+		if(currentMarker != null) {
+			markerSource = currentMarker;
+		}
+		
+		double vd  = markerSource.getLat();
+		double kd  = markerSource.getLon();
 		
 	    String apiUrl = "https://overpass-api.de/api/interpreter?data=";
 	    String query = "[out:json];node[\"tourism\"=\"%s\"](around:5000,%f,%f);out;";
@@ -367,7 +388,7 @@ public class MapController implements Initializable {
                     double lat = obj.getDouble("lat");
                     double lon = obj.getDouble("lon");
                     
-                    markers.add(new MapMarkerDot(lat, lon));
+                    markers.add(new RequestMapMarker(lat, lon, Color.RED, 15));
                 }
             }
             
@@ -391,7 +412,7 @@ public class MapController implements Initializable {
                 public void mouseClicked(MouseEvent e) {
                     // Khi người dùng click, lấy vị trí và đánh dấu điểm
                     Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-                    startMarker = new MapMarkerDot(position.getLat(), position.getLon());
+                    startMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.RED, 15);
             		mapViewer.addMapMarker(startMarker);
             		System.out.println("Điểm bắt đầu đã được đánh dấu.");
             		
@@ -418,7 +439,7 @@ public class MapController implements Initializable {
                 public void mouseClicked(MouseEvent e) {
                     // Khi người dùng click, lấy vị trí và đánh dấu điểm
                     Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-                    endMarker = new MapMarkerDot(position.getLat(), position.getLon());
+                    endMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.RED, 15);
             		mapViewer.addMapMarker(endMarker);
             		System.out.println("Điểm kết thúc đã được đánh dấu.");
             		
@@ -516,7 +537,8 @@ public class MapController implements Initializable {
 	        double longitude = jsonResponse.getDouble("longitude");
 
 	        if (mapViewer != null) {
-	            mapViewer.addMapMarker(new CustomMapMarker(latitude, longitude, Color.BLUE, 15, 2));
+	        	myLocationMarker = new CustomMapMarker(latitude, longitude, Color.BLUE, 15, 2);
+	            mapViewer.addMapMarker(myLocationMarker);
 	        }
 
 	        return new Coordinate(latitude, longitude);
