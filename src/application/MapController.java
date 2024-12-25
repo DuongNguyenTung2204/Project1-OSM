@@ -172,7 +172,7 @@ public class MapController implements Initializable {
             	JSONObject obj = results.getJSONObject(i);
             	double lat = obj.getDouble("lat");
             	double lon = obj.getDouble("lon");
-            	MapMarkerDot marker = new MapMarkerDot(lat, lon);
+            	MapMarkerDot marker = new RequestMapMarker(lat, lon, Color.RED, 15);
             	markers.add(marker);
             	mapViewer.addMapMarker(marker);
             }
