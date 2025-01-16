@@ -19,6 +19,9 @@ import org.json.JSONObject;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TemplatedTMSTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.TileSourceInfo;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
@@ -26,7 +29,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -43,6 +49,9 @@ public class MapController implements Initializable {
 
 	@FXML
 	private Button searchButton;
+	
+	@FXML
+	private ComboBox<String> typeMapComboBox;
 	
 	@FXML
 	private Button infoLocationButton;
@@ -76,6 +85,9 @@ public class MapController implements Initializable {
     
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		typeMapComboBox.getItems().addAll("Mặc định", "Vệ tinh");
+		typeMapComboBox.setValue("Mặc định");
+		
 		// Setup các thành phần mặc định cho bản đồ
 		SwingNode swingNode = new SwingNode(); 
         mapViewer = new CustomMapViewer();
@@ -133,6 +145,31 @@ public class MapController implements Initializable {
         //bottomSceneController2 = loader.getController();
         bottomVbox.getChildren().setAll(newContent.getChildren());
     }
+    
+    @FXML
+    public void onComboBoxAction() {
+        String selected = typeMapComboBox.getValue();
+        if(selected == "Mặc định") {
+        	setOSMTileSource();
+        }else {
+        	setMapboxTileSource();
+        }
+    }
+    
+    // Hàm thay đổi nguồn bản đồ về OpenStreetMap
+    public void setOSMTileSource() {
+        // Thay đổi {a,b,c} thành một subdomain cụ thể như a
+        TileSourceInfo osmTileSourceInfo = new TileSourceInfo("OpenStreetMap", "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png", "osm");
+        mapViewer.setTileSource(new TemplatedTMSTileSource(osmTileSourceInfo));
+    }
+
+
+    // Hàm thay đổi nguồn bản đồ về Mapbox
+    public void setMapboxTileSource() {
+        String mapboxTileUrl = "https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHVvbmduZ3V5ZW50dW5nIiwiYSI6ImNtNTN3MmRucTJsZmEyam9waXFpcjdwZmUifQ.A1Gyg9znXpkO7sHG9nD3WQ";
+        TileSourceInfo mapboxTileSourceInfo = new TileSourceInfo("Mapbox", mapboxTileUrl, "mapbox");
+        mapViewer.setTileSource(new TemplatedTMSTileSource(mapboxTileSourceInfo));
+    }
 
 	// Tính năng đánh dấu
 	public void updateMarker(double lat, double lon) {
@@ -177,7 +214,12 @@ public class MapController implements Initializable {
             	mapViewer.addMapMarker(marker);
             }
         } else {
-            System.out.println("Không tìm thấy");
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText(null); // Không có tiêu đề
+            alert.setContentText("Không tìm thấy địa điểm."); // Nội dung thông báo
+            alert.showAndWait(); // Hiển thị cửa sổ thông báo và chờ người dùng đóng
+            searchField.setText("");
         }
 	}
 	
@@ -233,7 +275,11 @@ public class MapController implements Initializable {
                 }
             });
         } else {
-            System.out.println("Không tìm thấy");
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText(null); // Không có tiêu đề
+            alert.setContentText("Không tìm thấy địa điểm."); // Nội dung thông báo
+            alert.showAndWait(); // Hiển thị cửa sổ thông báo và chờ người dùng đóng
         }	
 	}
 	
@@ -288,7 +334,11 @@ public class MapController implements Initializable {
                 }
             });
         } else {
-            System.out.println("Không tìm thấy");
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText(null); // Không có tiêu đề
+            alert.setContentText("Không tìm thấy địa điểm."); // Nội dung thông báo
+            alert.showAndWait(); // Hiển thị cửa sổ thông báo và chờ người dùng đóng
         }	
 	}
 	
@@ -343,7 +393,11 @@ public class MapController implements Initializable {
                 }
             });
         } else {
-            System.out.println("Không tìm thấy");
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText(null); // Không có tiêu đề
+            alert.setContentText("Không tìm thấy địa điểm."); // Nội dung thông báo
+            alert.showAndWait(); // Hiển thị cửa sổ thông báo và chờ người dùng đóng
         }	
 	}
 	
@@ -398,7 +452,11 @@ public class MapController implements Initializable {
                 }
             });
         } else {
-            System.out.println("Không tìm thấy");
+        	Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText(null); // Không có tiêu đề
+            alert.setContentText("Không tìm thấy địa điểm."); // Nội dung thông báo
+            alert.showAndWait(); // Hiển thị cửa sổ thông báo và chờ người dùng đóng
         }	
 	}
 	
