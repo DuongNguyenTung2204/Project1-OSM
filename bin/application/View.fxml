@@ -19,11 +19,12 @@
       <StackPane fx:id="mapPane" prefHeight="262.0" prefWidth="510.0" BorderPane.alignment="TOP_RIGHT" />
    </center>
    <top>
-      <HBox prefHeight="20.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="15.0" prefWidth="898.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="searchField" prefHeight="24.0" prefWidth="342.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchLocation" prefHeight="26.0" prefWidth="112.0" text="Search" HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="typeMapComboBox" onAction="#onComboBoxAction" prefHeight="26.0" prefWidth="112.0" promptText="Loại bản đồ" />
+            <ComboBox fx:id="typeMapComboBox" onAction="#onComboBoxAction" prefHeight="26.0" prefWidth="92.0" promptText="Loại bản đồ" styleClass="combo-box" />
+            <TextField fx:id="searchField" prefHeight="30.0" prefWidth="342.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchLocation" prefHeight="30.0" prefWidth="112.0" text="Search" HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#deleteRequest" prefHeight="30.0" prefWidth="54.0" text="Xóa" />
          </children>
       </HBox>
    </top>

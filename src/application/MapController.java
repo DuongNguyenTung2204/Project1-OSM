@@ -83,6 +83,8 @@ public class MapController implements Initializable {
     // Biến đếm số lần nhấp chuột
     private int count = 0;  // Đếm số lần nhấp chuột
     
+    private MouseAdapter mouseAdapter;
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		typeMapComboBox.getItems().addAll("Mặc định", "Vệ tinh");
@@ -104,29 +106,31 @@ public class MapController implements Initializable {
         mapViewer.setDisplayPosition(myLocation, 12);
         swingNode.setContent(mapViewer);
         mapPane.getChildren().add(swingNode);
-        infoLocationButton.fire();
         markers = new ArrayList<>();
         
-        mapViewer.addMouseListener(new MouseAdapter() {
-        	
-        	public void mouseClicked(MouseEvent e) {
-        		Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-  
-        		if (position != null) {
+        mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
+      
+                if (position != null) {
                     updateMarker(position.getLat(), position.getLon());
                     
                     try {
-						 bottomSceneController1.getInfomationLocal(position.getLat(), position.getLon());
-					} catch (IOException | InterruptedException e1) {
-						e1.printStackTrace();
-					}
-				
+                        bottomSceneController1.getInfomationLocal(position.getLat(), position.getLon());
+                    } catch (IOException | InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
-        	}
-		});
+            }
+        };
+        
+        infoLocationButton.fire();
 	}
 	
     public void loadBottomScene1(ActionEvent event) throws IOException {
+    	// Thêm MouseAdapter vào mapViewer
+        mapViewer.addMouseListener(mouseAdapter);
     	infoLocationButton.getStyleClass().add("selected");
         directionButton.getStyleClass().remove("selected");
         // Thay đổi nội dung bottomVbox cho "Thông tin địa điểm"
@@ -137,6 +141,8 @@ public class MapController implements Initializable {
     }
 
     public void loadBottomScene2(ActionEvent event) throws IOException {
+    	// Xóa MouseAdapter khỏi mapViewer
+        mapViewer.removeMouseListener(mouseAdapter);
     	directionButton.getStyleClass().add("selected");
         infoLocationButton.getStyleClass().remove("selected");
         // Thay đổi nội dung bottomVbox cho "Chỉ đường"
@@ -470,7 +476,12 @@ public class MapController implements Initializable {
                 public void mouseClicked(MouseEvent e) {
                     // Khi người dùng click, lấy vị trí và đánh dấu điểm
                     Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-                    startMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.RED, 15);
+                    
+                    if(startMarker != null) {
+                    	mapViewer.removeMapMarker(startMarker);
+                    }
+                    
+                    startMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.MAGENTA, 15);
             		mapViewer.addMapMarker(startMarker);
             		System.out.println("Điểm bắt đầu đã được đánh dấu.");
             		
@@ -497,7 +508,12 @@ public class MapController implements Initializable {
                 public void mouseClicked(MouseEvent e) {
                     // Khi người dùng click, lấy vị trí và đánh dấu điểm
                     Coordinate position = (Coordinate) mapViewer.getPosition(e.getX(), e.getY());
-                    endMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.RED, 15);
+                    
+                    if(endMarker != null) {
+                    	mapViewer.removeMapMarker(endMarker);
+                    }
+                    
+                    endMarker = new CurrentMapMarker(position.getLat(), position.getLon(), Color.MAGENTA, 15);
             		mapViewer.addMapMarker(endMarker);
             		System.out.println("Điểm kết thúc đã được đánh dấu.");
             		
@@ -560,7 +576,7 @@ public class MapController implements Initializable {
 	}
 
 	public void drawRoute(List<Coordinate> routePoints) {
-        // Gửi danh sách routePoints vào CustomJMapViewer
+        // Gửi danh sách routePoints vào CustomMapViewer
         mapViewer.setRoutePoints(routePoints);
     }
 	
@@ -576,9 +592,11 @@ public class MapController implements Initializable {
 	public Coordinate getMyLocation() throws IOException, InterruptedException {
 	    String url = "https://freegeoip.app/json/";
 
+	    
 	    HttpClient client = HttpClient.newBuilder()
 	            .followRedirects(HttpClient.Redirect.ALWAYS) // Xử lý chuyển hướng
 	            .build();
+	    
 
 	    HttpRequest request = HttpRequest.newBuilder()
 	            .uri(URI.create(url))
@@ -620,6 +638,25 @@ public class MapController implements Initializable {
 		JSONObject jsonResult = new JSONObject(result);
 		
 		return jsonResult;
+	}
+	
+	public void deleteRequest(ActionEvent event) {
+		clearAllMarkers();
+		mapViewer.setRoutePoints(null);
+		
+		if(startMarker != null) {
+        	mapViewer.removeMapMarker(startMarker);
+        }
+		
+		if(endMarker != null) {
+        	mapViewer.removeMapMarker(endMarker);
+        }
+		
+		
+		if(currentMarker != null) {
+			mapViewer.removeMapMarker(currentMarker);
+		}
+		
 	}
 
 	public MapMarkerDot getStartMarker() {
